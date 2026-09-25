@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Наш маленький квест</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+
+/* =========================
+   COLORS
+========================= */
+
+:root{
+  --bg-1:#fdf6f9;
+  --bg-2:#f3e9f5;
+  --bg-3:#fbeef3;
+
+  --card:#ffffff;
+  --card-border:#ead9e4;
+
+  --text:#33262e;
+  --text-soft:#5d4d58;
+  --muted:#8a7a85;
+
+  --accent:#d17fa3;
+  --accent-dark:#8e3f68;
+  --accent-deep:#4a2a42;
+  --accent-light:#fbe4ee;
+
+  --lavender:#9a7dc4;
+  --lavender-deep:#4a3870;
+  --lavender-light:#efe6fa;
+
+  --success:#3f8b62;
+  --success-light:#e8f6ee;
+
+  --danger:#c05757;
+  --danger-light:#fbeaea;
+
+  --gold:#d9a441;
+
+  --shadow:rgba(74,42,66,.14);
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+*{ box-sizing:border-box; }
+
+html, body{
+  margin:0;
+  min-height:100%;
+  color:var(--text);
+}
+
+body{
+  font-family:"DM Sans", system-ui, sans-serif;
+  overflow-x:hidden;
+
+  background:
+    radial-gradient(circle at 10% 5%, rgba(209,127,163,.35), transparent 30%),
+    radial-gradient(circle at 90% 85%, rgba(154,125,196,.32), transparent 32%),
+    radial-gradient(circle at 50% 50%, rgba(217,164,65,.10), transparent 60%),
+    linear-gradient(135deg, #fdf3f8 0%, #f1e6f5 50%, #f7e9f1 100%);
+  background-attachment:fixed;
+}
+
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.app{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 16px;
+}
+
+.shell{
+  width:min(720px,100%);
+  position:relative;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+  color:var(--text-soft);
+  font-size:13px;
+}
+
+.brand{
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-size:10px;
+  font-weight:700;
+  color:var(--accent-dark);
+}
+
+.progress-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.progress{
+  width:115px;
+  height:6px;
+  border-radius:99px;
+  background:#e8d3e0;
+  overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(74,42,66,.08);
+}
+
+.progress > span{
+  display:block;
+  height:100%;
+  width:0;
+  border-radius:99px;
+  background:linear-gradient(90deg, var(--accent), var(--lavender));
+  transition:width .5s ease;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card{
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,.94);
+  border:1px solid var(--card-border);
+  border-radius:28px;
+  padding:38px;
+  box-shadow:
+    0 30px 80px rgba(74,42,66,.16),
+    0 8px 24px rgba(74,42,66,.06);
+  animation:rise .55s ease both;
+}
+
+.card:before{
+  content:"";
+  position:absolute;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(209,127,163,.28), transparent 65%);
+  filter:blur(60px);
+  top:-180px;
+  right:-120px;
+  pointer-events:none;
+}
+
+.card:after{
+  content:"";
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(154,125,196,.24), transparent 65%);
+  filter:blur(60px);
+  bottom:-160px;
+  left:-110px;
+  pointer-events:none;
+}
+
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes rise{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:none; }
+}
+
+@keyframes shake{
+  0%,100%{ transform:translateX(0); }
+  25%{ transform:translateX(-7px); }
+  75%{ transform:translateX(7px); }
+}
+
+@keyframes pulse{
+  50%{ transform:scale(1.06); opacity:.9; }
+}
+
+@keyframes pop{
+  0%{ opacity:0; transform:scale(.75); }
+  100%{ opacity:1; transform:scale(1); }
+}
+
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+
+.eyebrow{
+  color:var(--accent-dark);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+h1, h2{
+  font-family:"Playfair Display", serif;
+  font-weight:600;
+  line-height:1.1;
+  margin:0 0 18px;
+  color:var(--accent-deep);
+}
+
+h1{ font-size:clamp(38px,8vw,66px); }
+h2{ font-size:clamp(28px,6vw,40px); }
+
+.lead{
+  font-size:16px;
+  line-height:1.75;
+  color:var(--text-soft);
+  max-width:600px;
+}
+
+.center{ text-align:center; }
+.center .lead{ margin-left:auto; margin-right:auto; }
+
+.hero-symbol{
+  font-size:50px;
+  margin-bottom:18px;
+  display:inline-block;
+  animation:pulse 2.2s ease-in-out infinite;
+}
+
+.small-note{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+
+/* =========================
+   DIVIDER
+========================= */
+
+.divider{
+  height:1px;
+  margin:26px 0;
+  background:linear-gradient(90deg, transparent, #e0c9d7, transparent);
+}
+
+
+/* =========================
+   CHALLENGE
+========================= */
+
+.challenge{
+  margin:26px 0;
+  padding:22px;
+  border-radius:20px;
+  border:1px solid #efdce8;
+  background:linear-gradient(180deg, #fffafc, #fdf3f8);
+  line-height:1.75;
+  color:#4a3a44;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.challenge code{
+  color:#8e3f68;
+  background:#fbe4ee;
+  padding:2px 6px;
+  border-radius:6px;
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+
+/* =========================
+   CODE BLOCK
+========================= */
+
+.code-block{
+  background:#3a2a3a;
+  border:1px solid #4a3a4a;
+  border-radius:14px;
+  padding:16px 18px;
+  margin:14px 0;
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  line-height:1.8;
+  color:#f6e0ee;
+  box-shadow:inset 0 1px 4px rgba(0,0,0,.35);
+}
+
+.code-block::before{
+  content:"пример";
+  display:block;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#b98fb0;
+  margin-bottom:8px;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+input{
+  width:100%;
+  height:56px;
+  border-radius:15px;
+  border:1.5px solid #e0c9d7;
+  background:#fff;
+  color:#33262e;
+  padding:0 17px;
+  font:500 16px "DM Sans", sans-serif;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+
+input::placeholder{ color:#b3a3ad; }
+
+input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(209,127,163,.16);
+}
+
+.input-row{
+  display:flex;
+  gap:10px;
+}
+
+.input-row input{ flex:1; }
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button{
+  border:0;
+  border-radius:15px;
+  cursor:pointer;
+  font:600 15px "DM Sans", sans-serif;
+  transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+button:hover{ transform:translateY(-1px); }
+button:active{ transform:translateY(0); }
+
+.primary{
+  width:100%;
+  height:56px;
+  margin-top:12px;
+  color:#fff;
+  background:linear-gradient(135deg, #b95a86, #7a5cb8);
+  box-shadow:0 10px 24px rgba(142,63,104,.30);
+  letter-spacing:.02em;
+}
+
+.primary:hover{
+  box-shadow:0 14px 32px rgba(142,63,104,.42);
+}
+
+.secondary{
+  background:linear-gradient(180deg, #fbeaf2, #f6dfeb);
+  color:#7a2f56;
+  padding:12px 18px;
+  border:1px solid #eec9dd;
+}
+
+.secondary:hover{
+  background:linear-gradient(180deg, #f8dfeb, #f2d2e2);
+}
+
+
+/* =========================
+   FEEDBACK
+========================= */
+
+.hint-btn{
+  margin-top:14px;
+}
+
+.feedback{
+  min-height:26px;
+  margin-top:12px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.success{ color:var(--success); }
+.error{ color:var(--danger); }
+
+.shake{ animation:shake .28s ease; }
+
+
+/* =========================
+   NEXT BLOCK
+========================= */
+
+.next{
+  display:none;
+  margin-top:22px;
+  padding:22px;
+  border-radius:20px;
+  background:linear-gradient(180deg, #eefaf3, #e2f4ea);
+  border:1.5px solid #b9e2ca;
+  box-shadow:0 8px 24px rgba(63,139,98,.10);
+}
+
+.next.show{
+  display:block;
+  animation:rise .35s ease;
+}
+
+.next-title{
+  font-weight:700;
+  color:var(--success);
+  margin-bottom:10px;
+  font-size:15px;
+}
+
+.next-text{
+  color:#3f4a44;
+  line-height:1.7;
+  white-space:pre-line;
+}
+
+/* password zone inside next block */
+
+.password-zone{
+  margin-top:18px;
+  padding:16px;
+  border-radius:15px;
+  background:rgba(255,255,255,.7);
+  border:1.5px dashed #a7d4b8;
+}
+
+/* плавное схлопывание поля пароля */
+.password-zone input{
+  max-width: 100%;
+  transition:
+    max-width .5s cubic-bezier(.4, 0, .2, 1),
+    padding .5s cubic-bezier(.4, 0, .2, 1),
+    border-width .5s cubic-bezier(.4, 0, .2, 1),
+    opacity .4s ease;
+}
+
+.password-zone input.hide-smooth{
+  max-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-width: 0;
+  opacity: 0;
+  min-width: 0;
+  pointer-events: none;
+}
+
+/* плавная работа кнопки */
+.password-zone button{
+  transition:
+    width .5s cubic-bezier(.4, 0, .2, 1),
+    margin .5s cubic-bezier(.4, 0, .2, 1),
+    background .3s ease,
+    box-shadow .3s ease;
+}
+
+.password-label{
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--accent-dark);
+  margin-bottom:10px;
+}
+
+.password-hint{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:8px;
+  line-height:1.5;
+}
+
+.password-ok{
+  margin-top:14px;
+  font-size:14px;
+  color:var(--success);
+  font-weight:600;
+}
+
+
+/* =========================
+   HINT
+========================= */
+
+.hint{
+  display:none;
+  margin-top:14px;
+  padding:14px 16px;
+  border-radius:15px;
+  background:linear-gradient(180deg, #f3ecfa, #eae0f7);
+  border:1px solid #d9c8ee;
+  color:#5a4a75;
+  font-size:14px;
+  line-height:1.55;
+}
+
+.hint.show{ display:block; }
+
+
+/* =========================
+   FINAL SCREEN
+========================= */
+
+.final{ text-align:center; }
+
+.final .big{
+  font-size:72px;
+  animation:pop .6s ease both;
+}
+
+.gift{
+  margin-top:24px;
+  padding:26px;
+  border-radius:22px;
+  background:linear-gradient(135deg, #fce6f0, #efe4fa);
+  border:1.5px solid #e5cfe3;
+  box-shadow:0 14px 40px rgba(142,63,104,.12);
+}
+
+.gift strong{
+  display:block;
+  font-family:"Playfair Display", serif;
+  font-size:28px;
+  margin-bottom:10px;
+  color:var(--accent-deep);
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+  text-align:center;
+  color:#a892a0;
+  font-size:11px;
+  margin-top:14px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+  .app{ padding:18px 12px; }
+  .card{ padding:26px 20px; border-radius:23px; }
+  .input-row{ flex-direction:column; }
+  .primary{ margin-top:10px; }
+  .progress{ width:80px; }
+  .brand{ font-size:9px; }
+  .top{ font-size:12px; }
+}
+
+/* =========================
+   ПЛАВАЮЩИЕ ЛЕПЕСТКИ / ЗВЁЗДОЧКИ / СЕРДЕЧКИ
+========================= */
+
+.petals{
+  position:fixed;
+  inset:0;
+  pointer-events:none;   /* чтобы не мешали кликам */
+  z-index:0;             /* под карточкой */
+  overflow:hidden;
+}
+
+.petals span{
+  position:absolute;
+  display:block;
+  font-size:14px;
+  animation:floatUp linear infinite;
+  user-select:none;
+  text-shadow: 0 0 8px currentColor;
+}
+
+@keyframes floatUp{
+  0%   { transform:translateY(110vh) translateX(0) rotate(0deg); opacity:0; }
+  10%  { opacity:.5; }
+  90%  { opacity:.5; }
+  100% { transform:translateY(-15vh) translateX(40px) rotate(320deg); opacity:0; }
+}
+
+/* =========================
+   FINAL — пошаговый финал
+========================= */
+
+.final{ text-align:center; }
+
+.final .big{
+  font-size:72px;
+  animation:pop .6s ease both;
+  display:inline-block;
+}
+
+.final .lead{
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* маленькая кнопка внутри финала */
+.final-btn{
+  margin-top:8px;
+  padding:14px 26px;
+  border-radius:14px;
+  background:linear-gradient(135deg, #b95a86, #7a5cb8);
+  color:#fff;
+  font:600 15px "DM Sans", sans-serif;
+  border:0;
+  cursor:pointer;
+  box-shadow:0 10px 26px rgba(142,63,104,.32);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+
+.final-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 14px 32px rgba(142,63,104,.44);
+}
+
+/* блок с подсказкой, где подарок */
+.final-hint{
+  margin-top:26px;
+  padding:26px 24px;
+  border-radius:20px;
+  background:linear-gradient(135deg, #fce6f0, #efe4fa);
+  border:1.5px solid #e5cfe3;
+  box-shadow:0 14px 40px rgba(142,63,104,.12);
+  text-align:left;
+  line-height:1.75;
+  color:#4a3a44;
+}
+
+.final-hint b{
+  color:var(--accent-deep);
+}
+
+/* мягкая пульсация эмодзи на 2-м экране */
+.final .tease{
+  animation:pulse 2s ease-in-out infinite;
+  display:inline-block;
+  font-size:64px;
+}
+
+/* конфетти */
+.confetti{
+  position:fixed;
+  top:-20px;
+  width:9px;
+  height:14px;
+  border-radius:2px;
+  pointer-events:none;
+  z-index:50;
+  animation:confettiFall linear forwards;
+}
+
+@keyframes confettiFall{
+  0%{
+    transform:translateY(-20px) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) rotate(720deg);
+    opacity:0;
+  }
+}
+
+/* =========================
+   ФОТО В ФИНАЛЕ
+========================= */
+
+.photo-wrap{
+  display:none;
+  margin-top:26px;
+  animation:rise .6s ease both;
+}
+
+.photo-wrap.show{
+  display:block;
+}
+
+.photo-frame{
+  display:inline-block;
+  padding:14px 14px 50px;
+  background:#fff;
+  border-radius:6px;
+  box-shadow:
+    0 20px 50px rgba(142,63,104,.22),
+    0 6px 16px rgba(74,42,66,.10);
+  transform:rotate(-2deg);
+  position:relative;
+  max-width:100%;
+}
+
+/* «скотч» сверху */
+.photo-frame::before{
+  content:"";
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%) rotate(-3deg);
+  width:90px;
+  height:22px;
+  background:rgba(245,198,165,.75);
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+  border-radius:2px;
+}
+
+.photo-frame img{
+  display:block;
+  max-width:100%;
+  width:340px;
+  height:auto;
+  border-radius:3px;
+  filter:saturate(1.05) contrast(1.02);
+}
+
+/* подпись под фото */
+.photo-caption{
+  position:absolute;
+  bottom:12px;
+  left:0;
+  right:0;
+  text-align:center;
+  font-family:"Playfair Display", serif;
+  font-style:italic;
+  font-size:16px;
+  color:#8e3f68;
+}
+
+@media(max-width:600px){
+  .photo-frame img{ width:100%; max-width:280px; }
+  .photo-frame{ padding:10px 10px 44px; transform:rotate(-1deg); }
+  .photo-caption{ font-size:14px; }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<div class="app">
+
+<main class="shell">
+
+  <div class="top">
+
+    <div class="brand">
+      наш маленький квест
+    </div>
+
+    <div class="progress-wrap">
+
+      <span id="progressText">Старт</span>
+
+      <div class="progress">
+        <span id="progressBar"></span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <section id="screen"></section>
+
+
+  <div class="footer">
+    сделано с любовью ❤️
+  </div>
+
+</main>
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   QUEST STAGES
+========================= */
+
+const stages = [
+
+  /* ---------- STAGE 1 ---------- */
+
+  {
+    title:"Этап 1 — Разминка для ума",
+    emoji:"🧮",
+    body:`Прежде чем отправиться в путь, предлагаю немного размяться.
+
+Впереди — не самая сложная, но всё же задачка.
+Смотри внимательно:`,
+    code:`((12 × 8) + 44) ÷ 2 + 25 − 15 = ?`,
+    after:`Введи ответ.`,
+    answer:["100"],
+    placeholder:"Введи ответ",
+    hint:"Сначала умножь, потом прибавь, потом раздели — и не забудь про последние два числа.",
+    success:`Идеально — ровно 100. 🎯
+
+А знаешь, почему именно 100?
+Потому что ты такой классный — сто из ста. 😌
+
+Разминка пройдена.
+
+Направляйся туда, где начинается твой день: среди воды, зеркал и утренних ритуалов.
+
+Там тебя ждёт первая подсказка.`,
+    password:"786491"
+  },
+
+
+  /* ---------- STAGE 2 ---------- */
+
+  {
+    title:"Этап 2 — Любимый мультфильм",
+    emoji:"🎬",
+    body:`Теперь проверим, насколько хорошо ты знаешь свою жену.
+
+Есть один мультфильм, который она особенно любила в детстве.
+
+В нём есть роза 🌹, заколдованный замок 🏰, чудовище и девушка, которая однажды увидела в нём нечто большее.
+
+Как называется этот мультфильм?`,
+    answer:["красавица и чудовище","Красавица и чудовище"],
+    placeholder:"Введи название",
+    hint:"Подсказка почти в самом тексте: роза, замок и чудовище.",
+    success:`Верно!
+
+Кажется, ты неплохо знаешь свою жену.
+
+А теперь отправляйся туда, где очень тепло, пахнет чем-то вкусным и иногда рождаются настоящие кулинарные шедевры.
+
+Следующая подсказка спрятана там.`,
+    password:"1ROSE2"
+  },
+
+
+  /* ---------- STAGE 3 ---------- */
+
+  {
+    title:"Этап 3 — Путешествие",
+    emoji:"🌍",
+    body:`Теперь вспомним одно особенное путешествие.
+
+Ты готовился к нему, кажется, больше всего на свете.
+Оно должно было стать важным шагом на пути к нашей жизни вместе.
+
+Там было много хинкали, гор, вина и моментов, которые мы точно не забудем. 🍷🏔️
+
+В какую страну мы отправились?`,
+    answer:["грузия","Грузия"],
+    placeholder:"Введи страну",
+    hint:"Страна, где были наши хинкали, горы и вино.",
+    success:`Именно!
+
+Кажется, это путешествие ты точно не забыл.
+
+А теперь продолжим наше маленькое путешествие.
+Следующая подсказка ждёт тебя там, где еда обычно ждёт своего часа, хоть иногда и умирает. 🧊
+
+Ищи её там.`,
+    password:"160726"
+  },
+
+
+  /* ---------- STAGE 4 ---------- */
+
+  {
+    title:"Этап 4 — Семья",
+    emoji:"🐾",
+    body:`В нашей квартире есть тот, кто:
+
+— ничего не делает, но очень занят;
+— спит тогда, когда хочет;
+— ест за чужой счёт;
+— может игнорировать тебя, когда ты его зовёшь;
+— и при этом всё равно является одним из самых любимых членов семьи. ❤️
+
+Кто это?`,
+    answer:["гав","гав","Гав"],
+    placeholder:"Введи имя",
+    hint:"Кот — это слишком общее. У этого конкретного господина есть имя. 😼",
+    success:`Конечно, Гав.
+
+Кажется, ты уже начинаешь понимать правила этой игры.
+
+А теперь найди место, которое создано специально для путешествий одного пушистого пассажира.
+Правда путешествовал он пока только в ветернарную клинику(
+
+Следующая подсказка ждёт тебя там.`,
+    password:"052024"
+  },
+
+
+  /* ---------- STAGE 5 ---------- */
+
+  {
+    title:"Этап 5 — Наша дата",
+    emoji:"💍",
+    body:`Осталось совсем немного.
+
+Теперь вопрос, ответ на который должен быть где-то глубоко в памяти и навсегда.
+
+Был один день, который сильно изменил наш статус.
+
+До него мы были просто мы.
+А после него стали мужем и женой. ❤️
+
+Что это была за дата?
+
+Введи её в формате ДД.ММ.ГГГГ`,
+    answer:["01.08.2026","1.08.2026","01/08/2026","1/08/2026", "01082026"],
+    placeholder:"ДД.ММ.ГГГГ",
+    hint:"Лето. Самый первый день августа. 2026.",
+    success:`01.08.2026
+
+Эту дату ты точно не должен был забыть. ❤️
+
+Осталась всего одна подсказка.
+Теперь тебе понадобится немного внимательности.
+
+Твой следующий пункт — место, где хранятся докумажки, которые нужны не каждый день, но всегда должны быть под рукой. 
+Возможно, среди них найдётся кое-что для тебя.
+
+Следующая подсказка — среди документов.`,
+    password:"010826"
+  },
+
+
+  /* ---------- STAGE 6 ---------- */
+
+  {
+    title:"Этап 6 — Последняя подсказка",
+    emoji:"🕵️",
+    body:`Ты почти у цели.
+
+Но последнее место я просто так тебе не назову. 😏
+
+Небольшая подсказка:
+
+Место, где живут вещи, которые согревают зимой, спасают от дождя и помогают пережить переменчивую погоду. 
+Именно туда твоя жена регулярно заглядывает, после чего неизменно приходит к выводу: «Мне опять нечего надеть!» 😄
+
+Где находится следующая подсказка?`,
+    answer:["шкаф","гардероб","шкаф с одеждой","гардеробная"],
+    placeholder:"Твой ответ",
+    hint:"Там живут футболки, брюки, рубашки и всё то, что ты надеваешь.",
+    success:`Верно.
+
+Ты нашёл последнее место.
+
+А теперь найди стикер и введи код в поле ниже.`,
+    password:"LOVEYOU",
+    final:true
+  }
+
+];
+
+
+let current = -1;
+
+
+/* =========================
+   NORMALIZE
+========================= */
+
+function normalize(value){
+  return value.trim().toLowerCase().replaceAll("ё","е").replace(/\s+/g," ");
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+function setProgress(){
+  const progress = current < 0 ? 0 : Math.min(current + 1, 6);
+
+  document.getElementById("progressText").textContent =
+    current < 0 ? "Старт" : `Этап ${progress} из 6`;
+
+  document.getElementById("progressBar").style.width =
+    `${progress / 6 * 100}%`;
+}
+
+
+/* =========================
+   START SCREEN
+========================= */
+
+function renderStart(){
+  setProgress();
+
+  document.getElementById("screen").innerHTML = `
+
+    <div class="card center">
+
+      <div class="hero-symbol">✦</div>
+
+      <div class="eyebrow">только для одного человека</div>
+
+      <h1>Наш маленький квест</h1>
+
+      <p class="lead">
+        Тебя ждут загадки, воспоминания,
+        несколько тайников и небольшой подарок
+        в самом конце.
+      </p>
+
+      <div class="divider"></div>
+
+      <p class="small-note">
+        Правило простое:
+        решаешь загадку → находишь стикер → вводишь пароль со стикера → двигаешься дальше.
+      </p>
+
+      <button class="primary" onclick="startQuest()">
+        Начать
+      </button>
+
+    </div>
+
+  `;
+}
+
+
+/* =========================
+   START QUEST
+========================= */
+
+function startQuest(){
+  current = 0;
+  renderStage();
+}
+
+
+/* =========================
+   RENDER STAGE
+========================= */
+
+function renderStage(){
+  setProgress();
+
+  const stage = stages[current];
+
+  const codePart = stage.code
+    ? `<div class="code-block">${escapeHtml(stage.code)}</div>`
+    : "";
+
+  document.getElementById("screen").innerHTML = `
+
+    <div class="card">
+
+      <div class="eyebrow">
+        ${stage.emoji} ${stage.title}
+      </div>
+
+      <h2>Испытание №${current + 1}</h2>
+
+      <div class="challenge">
+        ${escapeHtml(stage.body).replace(/\n/g,"<br>")}
+        ${codePart}
+        <br>
+        ${escapeHtml(stage.after || "").replace(/\n/g,"<br>")}
+      </div>
+
+
+      <div class="input-row">
+        <input id="answer" autocomplete="off" placeholder="${stage.placeholder}">
+        <button class="secondary" onclick="checkAnswer()">Проверить</button>
+      </div>
+
+      <div id="feedback" class="feedback"></div>
+
+
+      <button class="secondary hint-btn" onclick="toggleHint()">
+        💡 Нужна подсказка?
+      </button>
+
+      <div id="hint" class="hint">
+        ${escapeHtml(stage.hint)}
+      </div>
+
+
+      <div id="next" class="next">
+
+        <div class="next-title">✓ Верно</div>
+
+        <div class="next-text">
+          ${escapeHtml(stage.success)}
+        </div>
+
+
+        <div class="password-zone">
+
+          <div class="password-label">
+            🔑 Пароль со стикера
+          </div>
+
+          <div class="input-row">
+            <input
+              id="passwordInput"
+              autocomplete="off"
+              placeholder="Введи пароль со стикера"
+            >
+            <button class="secondary" onclick="checkPassword()">
+              Открыть
+            </button>
+          </div>
+
+          <div id="passwordFeedback" class="feedback"></div>
+
+          <div id="passwordOk" class="password-ok"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document
+    .getElementById("answer")
+    .addEventListener("keydown", e => {
+      if(e.key === "Enter") checkAnswer();
+    });
+
+  document
+    .getElementById("passwordInput")
+    .addEventListener("keydown", e => {
+      if(e.key === "Enter") checkPassword();
+    });
+}
+
+
+/* =========================
+   CHECK ANSWER
+========================= */
+
+function checkAnswer(){
+  const stage = stages[current];
+  const input = document.getElementById("answer");
+  const feedback = document.getElementById("feedback");
+
+  const isCorrect = stage.answer.some(
+    answer => normalize(answer) === normalize(input.value)
+  );
+
+  if(isCorrect){
+    feedback.className = "feedback success";
+    feedback.textContent = "✓ Правильно! Теперь введи пароль со стикера ниже.";
+
+    document.getElementById("next").classList.add("show");
+    input.disabled = true;
+
+    document
+      .getElementById("passwordInput")
+      .focus();
+  }
+  else{
+    feedback.className = "feedback error";
+    feedback.textContent = "Пока нет. Подумай ещё раз.";
+
+    input.classList.remove("shake");
+    void input.offsetWidth;
+    input.classList.add("shake");
+  }
+}
+
+
+/* =========================
+   CHECK PASSWORD
+========================= */
+
+function checkPassword(){
+  const stage = stages[current];
+  const input = document.getElementById("passwordInput");
+  const feedback = document.getElementById("passwordFeedback");
+  const ok = document.getElementById("passwordOk");
+
+  if(normalize(input.value) === normalize(stage.password)){
+
+    feedback.className = "feedback success";
+    feedback.textContent = "";
+
+    ok.textContent = "🔓 Пароль принят!";
+
+    input.disabled = true;
+    input.classList.add("hide-smooth");
+    input.style.transition = "opacity .3s ease";
+    input.style.opacity = "0";
+    setTimeout(() => { input.style.display = "none"; }, 300);
+
+    // заменяем кнопку на "Продолжить"
+    const zone = input.closest(".password-zone");
+    const btn = zone.querySelector("button");
+    btn.textContent = "Продолжить →";
+    btn.classList.remove("secondary");
+    btn.classList.add("primary");
+    btn.style.width = "100%";
+    btn.style.marginTop = "12px";
+    btn.onclick = () => {
+      if(stage.final){
+        renderFinal();
+      } else {
+        nextStage();
+      }
+    };
+
+  } else {
+    feedback.className = "feedback error";
+    feedback.textContent = "Пароль не подходит. Проверь стикер.";
+
+    input.classList.remove("shake");
+    void input.offsetWidth;
+    input.classList.add("shake");
+  }
+}
+
+
+/* =========================
+   HINT
+========================= */
+
+function toggleHint(){
+  document.getElementById("hint").classList.toggle("show");
+}
+
+
+/* =========================
+   NEXT STAGE
+========================= */
+
+function nextStage(){
+  current++;
+  renderStage();
+}
+
+
+/* =========================
+   FINAL — экран 1: поздравление
+========================= */
+
+function renderFinal(){
+  setProgress();
+  launchConfetti();
+
+  document.getElementById("screen").innerHTML = `
+
+    <div class="card final">
+
+      <div class="big">🎉</div>
+
+      <div class="eyebrow">миссия выполнена</div>
+
+      <h2>Ты прошёл весь путь</h2>
+
+      <p class="lead">
+        Ты решил загадки, вспомнил важные моменты,
+        нашёл все подсказки и, надеюсь,
+        хорошо развлекся. ❤️
+      </p>
+
+      <div class="divider"></div>
+
+      <button class="final-btn" onclick="renderFinalTease()">
+        А где подарок? →
+      </button>
+
+    </div>
+
+  `;
+}
+
+
+/* =========================
+   FINAL — экран 2: интрига
+========================= */
+
+function renderFinalTease(){
+  document.getElementById("screen").innerHTML = `
+
+    <div class="card final">
+
+      <div class="tease">😏</div>
+
+      <div class="eyebrow">но есть одна проблема</div>
+
+      <h2>Я так и не сказала тебе,<br>где подарок</h2>
+
+      <p class="lead">
+        Хотя ты честно прошёл весь квест.
+      </p>
+
+      <div class="divider"></div>
+
+      <button class="final-btn" onclick="renderFinalGift()">
+        Ну и где? →
+      </button>
+
+    </div>
+
+  `;
+}
+
+
+/* =========================
+   FINAL — экран 3: подсказка + подарок
+========================= */
+
+function renderFinalGift(){
+  document.getElementById("screen").innerHTML = `
+
+    <div class="card final">
+
+      <div class="big">🎁</div>
+
+      <div class="eyebrow">последняя подсказка</div>
+
+      <h2>Там, где ты <em>работаешь</em></h2>
+
+      <div class="final-hint">
+
+        Здесь ты проводишь много времени.<br>
+        Ты много работаешь, думаешь, создаёшь,<br>
+        учишь других думать и творить,<br>
+        а иногда просто сидишь и отдыхаешь за играми.<br><br>
+
+        <b>Иди к своему рабочему столу.</b><br>
+        Загляни в полку. Там тебя ждёт подарок. 🎁
+
+      </div>
+
+      <p class="lead" style="margin-top:24px">
+        Я люблю тебя, мое солнышко. ❤️
+      </p>
+
+      <div class="divider"></div>
+
+      <button class="final-btn" onclick="showPhoto()">
+        Чмокнуть маленького разработчика обязательно 💋
+      </button>
+
+      <div id="photoWrap" class="photo-wrap">
+        <div class="photo-frame">
+          <img src="photo.jpg" alt="Наша фотография">
+          <div class="photo-caption">мы ❤️</div>
+        </div>
+      </div>
+
+    </div>
+
+  `;
+
+  launchConfetti();
+}
+
+
+/* =========================
+   ПОКАЗ ФОТО
+========================= */
+
+function showPhoto(){
+  const wrap = document.getElementById("photoWrap");
+  if(!wrap) return;
+
+  wrap.classList.add("show");
+
+  // плавно прокрутить к фото
+  setTimeout(function(){
+    wrap.scrollIntoView({ behavior:"smooth", block:"center" });
+  }, 100);
+
+  // салют из конфетти
+  launchConfetti();
+}
+
+/* =========================
+   CONFETTI
+========================= */
+
+function launchConfetti(){
+  const colors = ["#d17fa3","#9a7dc4","#d9a441","#f5c6a5","#8e3f68"];
+
+  for(let i = 0; i < 45; i++){
+    const c = document.createElement("span");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2.4 + Math.random() * 2.2) + "s";
+    c.style.animationDelay = (Math.random() * .8) + "s";
+    c.style.width = (6 + Math.random() * 6) + "px";
+    c.style.height = (10 + Math.random() * 8) + "px";
+    document.body.appendChild(c);
+    setTimeout(function(){ c.remove(); }, 5500);
+  }
+}
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(str){
+  return String(str).replace(
+    /[&<>"']/g,
+    character => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[character])
+  );
+}
+
+/* =========================
+   INITIAL SCREEN
+========================= */
+
+/* =========================
+   PETALS — плавающие элементы
+========================= */
+
+(function initPetals(){
+  const container = document.getElementById("petals");
+  if(!container) return;
+
+  const symbols = ["🌸","✨","💗","✿","❀","♡","✦","🌷"];
+  const count = 20;
+
+  for(let i = 0; i < count; i++){
+    const s = document.createElement("span");
+    s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.fontSize = (8 + Math.random() * 22) + "px";
+    s.style.animationDuration = (12 + Math.random() * 22) + "s";
+    s.style.animationDelay = (-Math.random() * 20) + "s";
+    const colors = ["#d17fa3","#9a7dc4","#e8a4c0","#b9a0dd"];
+    s.style.color = colors[Math.floor(Math.random() * colors.length)];
+    s.style.opacity = 0.3 + Math.random() * 0.5;
+    container.appendChild(s);
+  }
+})();
+
+renderStart();
+
+</script>
+
+</body>
+</html>
